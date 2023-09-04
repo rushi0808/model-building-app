@@ -77,14 +77,14 @@ def model_result(model_element, x_labels, target, name, param=None):
         st.write(15 * "-")
         st.subheader("Regression Plot of errors:")
         st.plotly_chart(fig)
+        st.sidebar.success("Model build Sucessfully!")
         model_file = save_model(model_built, name)
         if model_file:
-            down_mod = st.sidebar.download_button(
-                label="download model", data=model_file, file_name="model.pkl"
+            st.sidebar.download_button(
+                label="Download model", data=model_file, file_name="model.pkl"
             )
-            st.sidebar.success("Model Build and saved!")
-            if down_mod:
-                del_file()
+            st.success("Model Build and saved!")
+            del_file()
 
     except Exception as e:
         st.warning(e)

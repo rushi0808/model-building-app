@@ -73,11 +73,11 @@ def model_result(model_ele, x_labels, target, params, name):
 
         model_file = save_model(model, name)
         if model_file:
-            down_mod = st.download_button(
-                label="Download Model", data=model_file, file_name="model.pkl"
+            st.download_button(
+                label="Download model", data=model_file, file_name="model.pkl"
             )
-            if down_mod:
-                del_file()
+            st.sidebar.success("Model Downloaded!")
+            del_file()
 
     except Exception as e:
         st.warning(e)
