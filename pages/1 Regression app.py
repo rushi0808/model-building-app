@@ -11,17 +11,19 @@ from functions import (
     corr,
     data_clean,
     data_smapling,
+    data_transform,
     datasummary,
     del_file,
     label_encode,
     load_data,
+    model_zip,
     profiling_rp,
     rec_feat_ele,
     save_model,
 )
 
 
-def model_result(model_element, x_labels, target, name, param=None):
+def model_result(model_element, x_labels, target, param=None):
     try:
         st.title(f"Model {model_element} Results:")
         tr_x, tr_y, ts_x, ts_y = data_smapling(x_labels, target)
@@ -78,13 +80,16 @@ def model_result(model_element, x_labels, target, name, param=None):
         st.subheader("Regression Plot of errors:")
         st.plotly_chart(fig)
         st.sidebar.success("Model build Sucessfully!")
-        model_file = save_model(model_built, name)
-        if model_file:
-            st.sidebar.download_button(
-                label="Download model", data=model_file, file_name="model.pkl"
-            )
-            st.success("Model downloaded!")
-            del_file()
+        # making model_zip and downloading model
+        save_model(model_built)
+        model_zip()
+        st.sidebar.download_button(
+            label="Download model",
+            data=open(r"./model_zip.zip", "rb").read(),
+            file_name="model_zip.zip",
+        )
+        st.success("Model downloaded!")
+        del_file()
 
     except Exception as e:
         st.warning(e)
@@ -105,6 +110,9 @@ def main():
         if data.shape[0] < 30:
             st.warning("Model building with less than 30 records is not supported!")
 
+        cate_col = data.select_dtypes("object").columns
+        num_col = data.select_dtypes(np.number).columns
+
         if data_option == "Dataframe":
             st.title("Dataframe: ")
             st.dataframe(data)
@@ -120,10 +128,11 @@ def main():
         st.write(f"No of columns: {cols}.")
 
         col_drop = st.sidebar.multiselect(
-            label="Columns you wish to drop.",
-            options=sorted(data.columns),
+            label="Select columns to drop.",
+            options=data.columns,
             help="Select columns which have null percentage more then 40% and columns which are not significant.",
         )
+
         if col_drop:
             sel_target = st.sidebar.selectbox(
                 label="Select target Variable",
@@ -133,16 +142,32 @@ def main():
             df = col_drop_df(data, col_drop)
             clean_df = data_clean(df)
             label_encode_df = label_encode(clean_df)
-
         else:
             sel_target = st.sidebar.selectbox(
                 label="Select target Variable",
                 options=data.columns,
                 help="Select variable that you want to predict make sure that the variable is continous.",
             )
+
             df = data
             clean_df = data_clean(df)
             label_encode_df = label_encode(clean_df)
+
+        col_to_trans = st.sidebar.multiselect(
+            label="Select columns to transform.",
+            options=[col for col in num_col if col not in col_drop],
+            help="Select the columns on which you want to apply StandarScaling, min max scaling or log tranformation.",
+        )
+        trans_method = st.sidebar.radio(
+            label="Select transform method:",
+            options=["None", "StandarScale", "Min Max Scaler", "Log transformation"],
+            help="Select the method of data transformation as best fit for your data.",
+        )
+
+        if trans_method != "None":
+            label_encode_df = data_transform(
+                trans_method, label_encode_df, col_to_trans
+            )
 
         show_df = st.sidebar.radio("See: ", options=["Data description", "Clean Data"])
         if show_df == "Data description":
@@ -231,24 +256,18 @@ def main():
             feat_list.append(sel_target)
             label_encode_df = label_encode_df[feat_list]
 
-        model_name = st.sidebar.text_input(label="Enter model name:", max_chars=20)
-        if model_name == "":
-            st.sidebar.warning("Enter model name!")
         else:
-            build_mod = st.sidebar.button(label="Build Model")
+            build_mod = st.sidebar.checkbox(label="Build Model")
             if build_mod:
                 if model_element == "SVR":
                     model_result(
                         model_element,
                         label_encode_df,
                         sel_target,
-                        name=model_name,
                         param=param,
                     )
                 else:
-                    model_result(
-                        model_element, label_encode_df, sel_target, name=model_name
-                    )
+                    model_result(model_element, label_encode_df, sel_target)
 
     else:
         st.sidebar.warning("Please Upload a file.")

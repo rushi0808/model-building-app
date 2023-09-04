@@ -18,10 +18,12 @@ from functions import (
     corr,
     data_clean,
     data_smapling,
+    data_transform,
     datasummary,
     del_file,
     label_encode,
     load_data,
+    model_zip,
     profiling_rp,
     rec_feat_ele,
     save_model,
@@ -32,7 +34,7 @@ def model_button():
     st.session_state.show_res = not st.session_state.show_res
 
 
-def model_result(model_ele, x_labels, target, params, name):
+def model_result(model_ele, x_labels, target, params):
     st.title(f"{model_ele} results:")
     try:
         model = build_model(model_ele, params)
@@ -71,13 +73,16 @@ def model_result(model_ele, x_labels, target, params, name):
             st.pyplot(fig)
         st.sidebar.success("Model build Sucessfully!")
 
-        model_file = save_model(model, name)
-        if model_file:
-            st.download_button(
-                label="Download model", data=model_file, file_name="model.pkl"
-            )
-            st.sidebar.success("Model downloaded!")
-            del_file()
+        save_model(model)
+        model_zip()
+
+        st.sidebar.download_button(
+            label="Download model",
+            data=open(r"./model_zip.zip", "rb").read(),
+            file_name="model_zip.zip",
+        )
+        del_file()
+        # st.sidebar.success("Model downloaded!")
 
     except Exception as e:
         st.warning(e)
@@ -93,6 +98,12 @@ def main():
         data_option = st.sidebar.radio(
             label="Go to: ", options=["Dataframe", "Profile Report"]
         )
+        if data.shape[0] < 30:
+            st.warning("Model building with less than 30 records is not supported!")
+
+        cate_col = data.select_dtypes("object").columns
+        num_col = data.select_dtypes(np.number).columns
+
         if data_option == "Dataframe":
             st.title("Dataframe: ")
             st.dataframe(data)
@@ -131,6 +142,29 @@ def main():
             df = data
             clean_df = data_clean(df)
             label_encode_df = label_encode(clean_df)
+        try:
+            col_to_trans = st.sidebar.multiselect(
+                label="Select columns to transform.",
+                options=[col for col in num_col if col not in col_drop],
+                help="Select the columns on which you want to apply StandarScaling, min max scaling or log tranformation.",
+            )
+            trans_method = st.sidebar.radio(
+                label="Select transform method:",
+                options=[
+                    "None",
+                    "StandarScale",
+                    "Min Max Scaler",
+                    "Log transformation",
+                ],
+                help="Select the method of data transformation as best fit for your data.",
+            )
+
+            if trans_method != "None":
+                label_encode_df = data_transform(
+                    trans_method, label_encode_df, col_to_trans
+                )
+        except Exception as e:
+            st.warning(e)
 
         show_df = st.sidebar.radio("See: ", options=["Data description", "Clean Data"])
         if show_df == "Data description":
@@ -343,15 +377,10 @@ def main():
             feat_list.append(sel_target)
             label_encode_df = label_encode_df[feat_list]
 
-        model_name = st.sidebar.text_input(label="Enter model name", max_chars=20)
-        if model_name == "":
-            st.sidebar.warning("Enter model name!")
         else:
-            build_mod = st.sidebar.button(label="Build Model")
+            build_mod = st.sidebar.checkbox(label="Build Model")
             if build_mod:
-                model_result(
-                    model_element, label_encode_df, sel_target, params, model_name
-                )
+                model_result(model_element, label_encode_df, sel_target, params)
 
     else:
         st.sidebar.warning("Please Upload a file.")

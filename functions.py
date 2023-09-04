@@ -1,9 +1,13 @@
+import os
+
 import numpy as np
 import pandas as pd
 import ydata_profiling
 from scipy.stats import chi2_contingency
 from sklearn.feature_selection import RFE
 from sklearn.model_selection import cross_val_score, train_test_split
+
+path = r"./"
 
 
 def load_data(file):
@@ -226,24 +230,86 @@ def build_model(model_ele, params=None):
         return model
 
 
-def save_model(model, name):
+def data_transform(method, data, col):
+    if method == "StandarScale":
+        from sklearn.preprocessing import StandardScaler
+
+        scaler = StandardScaler()
+        trans_data = data[col]
+        trans_data = scaler.fit_transform(trans_data)
+        for i, n in enumerate(col):
+            data[n] = trans_data[:, i]
+        import pickle
+
+        with open("./scaler.pkl", "wb") as file:
+            pickle.dump(scaler, file)
+
+        with open("./transformed_column.txt", "w") as file:
+            file.write(f"Columns transformed with {method}: {str(col)}")
+
+        return data
+
+    elif method == "Min Max Scaler":
+        from sklearn.preprocessing import MinMaxScaler
+
+        scaler = MinMaxScaler()
+        trans_data = data[col]
+        trans_data = scaler.fit_transform(trans_data)
+        for i, n in enumerate(col):
+            data[n] = trans_data[:, i]
+        import pickle
+
+        with open("./scaler.pkl", "wb") as file:
+            pickle.dump(scaler, file)
+
+        with open("./transformed_column.txt", "w") as file:
+            file.write(f"Columns transformed with {method}: {str(col)}")
+
+        return data
+
+    elif method == "Log transformation":
+        for n in col:
+            data[n] = np.log(data[n])
+
+        with open("./transformed_column.txt", "w") as file:
+            file.write(f"Columns transformed with {method}: {str(col)}")
+
+        return data
+
+
+def save_model(model):
     import pickle
 
-    with open(f"./{name}.pkl", "wb") as file:
+    with open(r"./model.pkl", "wb") as file:
         pickle.dump(model, file)
 
-    with open(f"./{name}.pkl", "rb") as file:
+    with open(r"./model.pkl", "rb") as file:
         model_file = file.read()
 
     return model_file
 
 
-def del_file():
-    import os
+def model_zip():
+    import glob
+    import zipfile
 
-    path = r"./"
+    with zipfile.ZipFile(r"./model_zip.zip", "w") as zipf:
+        for i in os.walk(path):
+            if i[2] != []:
+                for each in i[2]:
+                    if len(each.split(".")) == 2:
+                        if each.split(".")[1] in ["pkl", "txt"]:
+                            files = glob.glob(each)
+                            for file in files:
+                                zipf.write(file)
+
+
+def del_file():
     for x in list(os.walk(path)):
-        for each in x[2]:
-            if each.split(".")[1] == "pkl":
-                print(each)
-                os.remove(each)
+        if x[2] != []:
+            for each in x[2]:
+                if len(each.split(".")) == 2:
+                    if each.split(".")[1] in ["pkl", "zip"]:
+                        os.remove(each)
+                    elif each.split(".")[0] in ["transformed_column"]:
+                        os.remove(each)

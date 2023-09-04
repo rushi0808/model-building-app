@@ -4,34 +4,25 @@ import streamlit as st
 def main():
     st.markdown(
         """
-    ## Welcome to Regression and Classification Model Building app! 
+    # Regression and Classification model building App!
 
-    ### Problem Statement:
-    - **Building regression and classification models can be time-consuming and complex, requiring coding knowledge.**
+    ### About Project
 
-    ### Motivation:
-    - So based on above problem and writing code every time I wanted to build a model, I decided to build this app with the help of my knowledge in python, machine learning and API like streamlit i was able to achive my target to build this app for building regression and classification models.
+    - This is a app for building regression and classification models.
+    - Build with the help of python and steamlit api.
+    - Where you can upload your csv or excel file.
+    - Choose the page for the model you want to build regression or classification.
+    - Choose the model us want to build or explore all the models and see for your self which suites your dataset the most.
+    - Requirements included.
 
-    ### Libraries:
-    - numpy for mathematical oprations
-    - pandas for loading data and preprocessing
-    - scikit-learn for model building, preprocessing, model performance report generating
-    - matplotlib for building charts in app
-    - plotly for building charts in app
-    - streamlit for front end
-    - ydata profiling for data analysis report
+    ### Features
 
-
-    ### Keyfeature:
-    - Algorithm selection: Choose from a variety of regression and classification algorithms to find the best fit for your problem.
-    - Hyperparameter tuning: Select and choose the best hyperparameter according to you and see for yourself which is best for you.
-    - Real-time model evaluation: Evaluate the performance of your models instantly and make data-driven decisions.
-    - Easy to use: app is designed with a user-friendly interface, allowing you to focus on building models rather than dealing with technical details.
-
-    ### Benefits:
-    - Save time: This app eliminates the need for manual coding and tedious model building, streamlining the process.
-
-    **Go to regression page or classification page to explore the app!**
+    - Included variety of models for classfication and regression.
+    - Included hyperparameter tuning so user can choose for him self the best parameters for data.
+    - Inclused model performance report for train and test data.
+    - Also added pandas profiling for data analysis.
+    - Also added data transformation feature for those who want to do standarScaling, minmax scaling and logtransformation.
+    - Downloading model with scaler for future predictions.
     """
     )
 
