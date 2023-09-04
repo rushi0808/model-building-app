@@ -231,3 +231,19 @@ def save_model(model, name):
 
     with open(f"./{name}.pkl", "wb") as file:
         pickle.dump(model, file)
+
+    with open(f"./{name}.pkl", "rb") as file:
+        model_file = file.read()
+
+    return model_file
+
+
+def del_file():
+    import os
+
+    path = r"./"
+    for x in list(os.walk(path)):
+        for each in x[2]:
+            if each.split(".")[1] == "pkl":
+                print(each)
+                os.remove(each)

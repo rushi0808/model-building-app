@@ -1,6 +1,8 @@
 import numpy as np
 import plotly.express as px
 import streamlit as st
+from streamlit_pandas_profiling import st_profile_report
+
 from functions import (
     build_model,
     chi,
@@ -10,13 +12,13 @@ from functions import (
     data_clean,
     data_smapling,
     datasummary,
+    del_file,
     label_encode,
     load_data,
     profiling_rp,
     rec_feat_ele,
     save_model,
 )
-from streamlit_pandas_profiling import st_profile_report
 
 
 def model_result(model_element, x_labels, target, name, param=None):
@@ -75,8 +77,14 @@ def model_result(model_element, x_labels, target, name, param=None):
         st.write(15 * "-")
         st.subheader("Regression Plot of errors:")
         st.plotly_chart(fig)
-        save_model(build_model, name)
-        st.sidebar.success("Model Build and saved!")
+        model_file = save_model(model_built, name)
+        if model_file:
+            down_mod = st.sidebar.download_button(
+                label="download model", data=model_file, file_name="model.pkl"
+            )
+            st.sidebar.success("Model Build and saved!")
+            if down_mod:
+                del_file()
 
     except Exception as e:
         st.warning(e)

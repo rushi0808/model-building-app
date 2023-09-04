@@ -3,6 +3,14 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    roc_auc_score,
+    roc_curve,
+)
+from streamlit_pandas_profiling import st_profile_report
+
 from functions import (
     build_model,
     chi,
@@ -11,19 +19,13 @@ from functions import (
     data_clean,
     data_smapling,
     datasummary,
+    del_file,
     label_encode,
     load_data,
     profiling_rp,
     rec_feat_ele,
     save_model,
 )
-from sklearn.metrics import (
-    classification_report,
-    confusion_matrix,
-    roc_auc_score,
-    roc_curve,
-)
-from streamlit_pandas_profiling import st_profile_report
 
 
 def model_button():
@@ -67,8 +69,15 @@ def model_result(model_ele, x_labels, target, params, name):
             plt.text(x=0.3, y=0.3, s=f"Area under curve: {round(roc_scr,2)}.")
             st.write(100 * "-")
             st.pyplot(fig)
-        save_model(model, name)
-        st.sidebar.success("Model build and saved!")
+        st.sidebar.success("Model build Sucessfully!")
+
+        model_file = save_model(model, name)
+        if model_file:
+            down_mod = st.download_button(
+                label="Download Model", data=model_file, file_name="model.pkl"
+            )
+            if down_mod:
+                del_file()
 
     except Exception as e:
         st.warning(e)
@@ -321,6 +330,9 @@ def main():
                 label="Select number of Feature",
                 min_value=1,
                 max_value=label_encode_df.shape[1] - 1,
+            )
+            features = rec_feat_ele(
+                model_element, label_encode_df, sel_target, num_feat
             )
             if list(features[features["Imp"] == True]["Imp"]).count(True) < 5:
                 st.warning(
