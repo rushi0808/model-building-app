@@ -76,7 +76,7 @@ def model_result(model_ele, x_labels, target, params, name):
             st.download_button(
                 label="Download model", data=model_file, file_name="model.pkl"
             )
-            st.sidebar.success("Model Downloaded!")
+            st.sidebar.success("Model downloaded!")
             del_file()
 
     except Exception as e:

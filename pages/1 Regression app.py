@@ -83,7 +83,7 @@ def model_result(model_element, x_labels, target, name, param=None):
             st.sidebar.download_button(
                 label="Download model", data=model_file, file_name="model.pkl"
             )
-            st.success("Model Build and saved!")
+            st.success("Model downloaded!")
             del_file()
 
     except Exception as e:
