@@ -298,7 +298,9 @@ def model_zip():
             if i[2] != []:
                 for each in i[2]:
                     if len(each.split(".")) == 2:
-                        if each.split(".")[1] in ["pkl", "txt"]:
+                        if each.split(".")[1] in ["pkl"] or each.split(".")[0] in [
+                            "transformed_column"
+                        ]:
                             files = glob.glob(each)
                             for file in files:
                                 zipf.write(file)
@@ -309,7 +311,7 @@ def del_file():
         if x[2] != []:
             for each in x[2]:
                 if len(each.split(".")) == 2:
-                    if each.split(".")[1] in ["pkl", "zip"]:
-                        os.remove(each)
-                    elif each.split(".")[0] in ["transformed_column"]:
+                    if each.split(".")[1] in ["pkl", "zip"] or each.split(".")[0] in [
+                        "transformed_column"
+                    ]:
                         os.remove(each)
