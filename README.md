@@ -2,7 +2,7 @@
 
 ### About Project
 
-- View the [app](https://model-builder-app.streamlit.app/)
+- View the [app](https://model-building-app.streamlit.app/)
 - This is a app for building regression and classification models.
 - Build with the help of python and steamlit api.
 - Where you can upload your csv or excel file.
