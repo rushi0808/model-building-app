@@ -11,7 +11,7 @@ from sklearn.metrics import (
 )
 from streamlit_pandas_profiling import st_profile_report
 
-from functions import (
+from src.functions import (
     build_model,
     chi,
     col_drop_df,
@@ -90,14 +90,10 @@ def model_result(model_ele, x_labels, target, params):
 
 def main():
     st.title("Classification app")
-    file = st.sidebar.file_uploader(
-        "Choose a file", type=["csv", "xlsx"], help="Upload CSV or Excel file."
-    )
+    file = st.sidebar.file_uploader("Choose a file", type=["csv", "xlsx"], help="Upload CSV or Excel file.")
     if file:
         data = load_data(file)
-        data_option = st.sidebar.radio(
-            label="Go to: ", options=["Dataframe", "Profile Report"]
-        )
+        data_option = st.sidebar.radio(label="Go to: ", options=["Dataframe", "Profile Report"])
         if data.shape[0] < 30:
             st.warning("Model building with less than 30 records is not supported!")
 
@@ -160,9 +156,7 @@ def main():
             )
 
             if trans_method != "None":
-                label_encode_df = data_transform(
-                    trans_method, label_encode_df, col_to_trans
-                )
+                label_encode_df = data_transform(trans_method, label_encode_df, col_to_trans)
         except Exception as e:
             st.warning(e)
 
@@ -190,9 +184,7 @@ def main():
         )
         st.sidebar.write("Select hyperparameters:")
         if model_element == "Logistic Regression":
-            penalty = st.sidebar.selectbox(
-                label="Penalty:", options=["l2", "l1", "elasticnet"]
-            )
+            penalty = st.sidebar.selectbox(label="Penalty:", options=["l2", "l1", "elasticnet"])
             solver = st.sidebar.selectbox(
                 label="Solver:",
                 options=[
@@ -204,19 +196,13 @@ def main():
                     "saga",
                 ],
             )
-            multi_class = st.sidebar.selectbox(
-                label="Multi Class", options=["auto", "ovr", "multinomial"]
-            )
+            multi_class = st.sidebar.selectbox(label="Multi Class", options=["auto", "ovr", "multinomial"])
 
             params = {"penalty": penalty, "solver": solver, "multi_class": multi_class}
 
         elif model_element == "Decision Tree":
-            criterion = st.sidebar.selectbox(
-                options=["gini", "entropy", "log_loss"], label="Criterion"
-            )
-            splitter = st.sidebar.selectbox(
-                options=["best", "random"], label="splitter"
-            )
+            criterion = st.sidebar.selectbox(options=["gini", "entropy", "log_loss"], label="Criterion")
+            splitter = st.sidebar.selectbox(options=["best", "random"], label="splitter")
             max_depth = st.sidebar.slider(
                 label="Max Depth",
                 min_value=1,
@@ -234,9 +220,7 @@ def main():
                 max_value=round(label_encode_df.shape[0] / 3),
                 step=5,
             )
-            class_weight = st.sidebar.selectbox(
-                label="Class Weight:", options=[None, "balanced", "balanced_subsample"]
-            )
+            class_weight = st.sidebar.selectbox(label="Class Weight:", options=[None, "balanced", "balanced_subsample"])
             params = {
                 "criterion": criterion,
                 "splitter": splitter,
@@ -253,12 +237,8 @@ def main():
                 max_value=round(label_encode_df.shape[0] / 3),
                 step=5,
             )
-            criterion = st.sidebar.selectbox(
-                options=["gini", "entropy", "log_loss"], label="Criterion"
-            )
-            splitter = st.sidebar.selectbox(
-                options=["best", "random"], label="splitter"
-            )
+            criterion = st.sidebar.selectbox(options=["gini", "entropy", "log_loss"], label="Criterion")
+            splitter = st.sidebar.selectbox(options=["best", "random"], label="splitter")
             max_depth = st.sidebar.slider(
                 label="Max Depth",
                 min_value=1,
@@ -276,9 +256,7 @@ def main():
                 max_value=round(label_encode_df.shape[0] / 3),
                 step=2,
             )
-            class_weight = st.sidebar.selectbox(
-                label="Class Weight:", options=[None, "balanced", "balanced_subsample"]
-            )
+            class_weight = st.sidebar.selectbox(label="Class Weight:", options=[None, "balanced", "balanced_subsample"])
             params = {
                 "n_estimators": n_estimators,
                 "criterion": criterion,
@@ -293,24 +271,16 @@ def main():
                 label="Kernel",
             )
             gamma = st.sidebar.selectbox(options=["scale", "auto"], label="Gamma")
-            class_weight = st.sidebar.selectbox(
-                label="Class Weight:", options=[None, "balanced", "balanced_subsample"]
-            )
-            decision_function_shape = st.sidebar.selectbox(
-                options=["ovo", "ovr"], label="Decision function shape"
-            )
+            class_weight = st.sidebar.selectbox(label="Class Weight:", options=[None, "balanced", "balanced_subsample"])
+            decision_function_shape = st.sidebar.selectbox(options=["ovo", "ovr"], label="Decision function shape")
             params = {
                 "kernel": kernel,
                 "gamma": gamma,
                 "decison_function_shape": decision_function_shape,
             }
         elif model_element == "KNN":
-            weights = st.sidebar.selectbox(
-                options=["uniform", "distance"], label="weights"
-            )
-            algorithm = st.sidebar.selectbox(
-                options=["auto", "ball_tree", "kd_tree", "brute"], label="algorithum"
-            )
+            weights = st.sidebar.selectbox(options=["uniform", "distance"], label="weights")
+            algorithm = st.sidebar.selectbox(options=["auto", "ball_tree", "kd_tree", "brute"], label="algorithum")
             params = {"weights": weights, "algorithum": algorithm}
 
         feature_sel = st.sidebar.selectbox(
@@ -318,12 +288,8 @@ def main():
             options=["None", "Correlation", "RFE", "Chi-Square"],
         )
         if feature_sel == "Correlation":
-            pov_corr = st.sidebar.slider(
-                label="Positive correlation", min_value=0.0, max_value=1.0, step=0.1
-            )
-            neg_corr = st.sidebar.slider(
-                label="Positive correlation", min_value=0.0, max_value=-1.0, step=0.1
-            )
+            pov_corr = st.sidebar.slider(label="Positive correlation", min_value=0.0, max_value=1.0, step=0.1)
+            neg_corr = st.sidebar.slider(label="Positive correlation", min_value=0.0, max_value=-1.0, step=0.1)
             features = corr(label_encode_df, sel_target, pov_corr, neg_corr)
             if list(features.index) == []:
                 st.warning(
@@ -333,9 +299,7 @@ def main():
             else:
                 st.subheader("Features with respect correlation:")
                 if len(list(features.index)) < 5:
-                    st.warning(
-                        "Using less than 5 variable to build model is not recommended!"
-                    )
+                    st.warning("Using less than 5 variable to build model is not recommended!")
                 st.dataframe(features)
                 feat_list = list(features.index)
                 feat_list.append(sel_target)
@@ -350,9 +314,7 @@ def main():
 
             st.subheader("Features with respect Chi-Square:")
             if len(list(features["Feature"])) < 5:
-                st.warning(
-                    "Using less than 5 variable to build model is not recommended!"
-                )
+                st.warning("Using less than 5 variable to build model is not recommended!")
             st.dataframe(features)
             feat_list = list(features["Feature"])
             feat_list.append(sel_target)
@@ -365,13 +327,9 @@ def main():
                 min_value=1,
                 max_value=label_encode_df.shape[1] - 1,
             )
-            features = rec_feat_ele(
-                model_element, label_encode_df, sel_target, num_feat
-            )
+            features = rec_feat_ele(model_element, label_encode_df, sel_target, num_feat)
             if list(features[features["Imp"] == True]["Imp"]).count(True) < 5:
-                st.warning(
-                    "Using less than 5 variable to build model is not recommended!"
-                )
+                st.warning("Using less than 5 variable to build model is not recommended!")
             st.dataframe(features[features["Imp"] == True])
             feat_list = list(features[features["Imp"] == True]["Feature"])
             feat_list.append(sel_target)
