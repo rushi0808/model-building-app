@@ -1,18 +1,3 @@
-<style>
-    h1 {
-        text-align: center;
-    }
-
-    .image-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .ml-image {
-        padding: 1rem;
-    }
-</style>
-
 <h1> Machine Learning Model Building Application </h1>
 
 ## Table Of Content
@@ -20,12 +5,11 @@
 - [Table Of Content](#table-of-content)
 - [About](#about)
 - [Features](#features)
+  - [1. Model Building](#1-model-building)
+  - [2. Data Exploration](#2-data-exploration)
+  - [3. Model Evaluation](#3-model-evaluation)
+  - [4. Download and Deploy](#4-download-and-deploy)
 - [Usage](#usage)
-  - [1. Upload your dataset.](#1-upload-your-dataset)
-  - [2. Select the machine learning algorithm and customize hyperparameter.](#2-select-the-machine-learning-algorithm-and-customize-hyperparameter)
-  - [3. Explore data and preprocess features as needed.](#3-explore-data-and-preprocess-features-as-needed)
-  - [4. Train the model and evaluate its performance.](#4-train-the-model-and-evaluate-its-performance)
-  - [5. Export the model for deployment.](#5-export-the-model-for-deployment)
 - [Install and run App locally](#install-and-run-app-locally)
   - [1. Clone the projects repo:](#1-clone-the-projects-repo)
   - [2. Change directory to project directory](#2-change-directory-to-project-directory)
@@ -52,30 +36,30 @@
 
 ## Features
 
-- ### 1. Model Building
-    - **Choose Algorithms:** Select from a variety of machine learning algorithms, including regression, classification, and clustering algorithms.
+### 1. Model Building
+- **Choose Algorithms:** Select from a variety of machine learning algorithms, including regression, classification, and clustering algorithms.
 
-    - **Hyperparameter Tuning:** Fine-tune your model by adjusting hyperparameter with an intuitive interface.
+- **Hyperparameter Tuning:** Fine-tune your model by adjusting hyperparameter with an intuitive interface.
 
-- ### 2. Data Exploration
-    - **Data Visualization:** Explore your dataset through interactive charts and graphs to gain insights.
+### 2. Data Exploration
+- **Data Visualization:** Explore your dataset through interactive charts and graphs to gain insights.
 
-    - **Data Preprocessing:** Handle missing values, scale features, and preprocess data with a few clicks.
+- **Data Preprocessing:** Handle missing values, scale features, and preprocess data with a few clicks.
 
-- ### 3. Model Evaluation
-    - **Performance Metrics:** Evaluate your model's performance using various metrics like accuracy, precision, recall, and more.
+### 3. Model Evaluation
+- **Performance Metrics:** Evaluate your model's performance using various metrics like accuracy, precision, recall, and more.
 
-    - **Confusion Matrix:** Visualize the model's predictions with an interactive confusion matrix.
+- **Confusion Matrix:** Visualize the model's predictions with an interactive confusion matrix.
 
-- ### 4. Download and Deploy
-    - **Export Models:** Download your trained model and preprocessor for deployment in real-world applications.
+### 4. Download and Deploy
+- **Export Models:** Download your trained model and preprocessor for deployment in real-world applications.
 
 ## Usage
-### 1. Upload your dataset.
-### 2. Select the machine learning algorithm and customize hyperparameter.
-### 3. Explore data and preprocess features as needed.
-### 4. Train the model and evaluate its performance.
-### 5. Export the model for deployment.
+1. Upload your dataset.
+2. Select the machine learning algorithm and customize hyperparameter.
+3. Explore data and preprocess features as needed.
+4. Train the model and evaluate its performance.
+5. Export the model for deployment.
 
 ## Install and run App locally
 ### 1. Clone the projects repo:
