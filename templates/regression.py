@@ -57,8 +57,12 @@ def model_result(model_element, x_labels, target, param=None):
         )
         st.write(15 * "-")
         st.subheader("Assumptions done on train data: ")
-        st.markdown(f"**Mean: {round(err_tr.mean(), 2)}         |   Median: {round(err_tr.median(), 2)}**")
-        st.markdown(f"**Kurtosis: {round(err_tr.kurtosis(), 2)} |   Skewness: {round(err_tr.skew(), 2)}**")
+        st.markdown(
+            f"**Mean: {round(err_tr.mean(), 2)}         |   Median: {round(err_tr.median(), 2)}**"
+        )
+        st.markdown(
+            f"**Kurtosis: {round(err_tr.kurtosis(), 2)} |   Skewness: {round(err_tr.skew(), 2)}**"
+        )
         st.write(15 * "-")
         st.subheader("Scatter Plot of errors:")
         fig = px.scatter(err_tr)
@@ -91,14 +95,18 @@ def model_result(model_element, x_labels, target, param=None):
         st.warning(e)
 
 
-def main():
-    st.title("Regression model building app")
+def regression():
+    st.title("Regression App")
     st.sidebar.title("Options: ")
-    file = st.sidebar.file_uploader("Choose a file", type=["csv", "xlsx"], help="Upload CSV or Excel file.")
+    file = st.sidebar.file_uploader(
+        "Choose a file", type=["csv", "xlsx"], help="Upload CSV or Excel file."
+    )
 
     if file:
         data = load_data(file)
-        data_option = st.sidebar.radio(label="Go to: ", options=["Dataframe", "Profile Report"])
+        data_option = st.sidebar.radio(
+            label="Go to: ", options=["Dataframe", "Profile Report"]
+        )
         if data.shape[0] < 30:
             st.warning("Model building with less than 30 records is not supported!")
 
@@ -157,7 +165,9 @@ def main():
         )
 
         if trans_method != "None":
-            label_encode_df = data_transform(trans_method, label_encode_df, col_to_trans)
+            label_encode_df = data_transform(
+                trans_method, label_encode_df, col_to_trans
+            )
 
         show_df = st.sidebar.radio("See: ", options=["Data description", "Clean Data"])
         if show_df == "Data description":
@@ -188,8 +198,12 @@ def main():
         )
 
         if feature_sel == "Correlation":
-            pov_corr = st.sidebar.slider(label="Positive correlation", min_value=0.0, max_value=1.0, step=0.1)
-            neg_corr = st.sidebar.slider(label="Positive correlation", min_value=0.0, max_value=-1.0, step=0.1)
+            pov_corr = st.sidebar.slider(
+                label="Positive correlation", min_value=0.0, max_value=1.0, step=0.1
+            )
+            neg_corr = st.sidebar.slider(
+                label="Positive correlation", min_value=0.0, max_value=-1.0, step=0.1
+            )
             features = corr(label_encode_df, sel_target, pov_corr, neg_corr)
             if not list(features.index):
                 st.warning(
@@ -199,7 +213,9 @@ def main():
             else:
                 st.subheader("Features with respect correlation:")
                 if len(list(features.index)) < 5:
-                    st.warning("Using less than 5 variable to build model is not recommended!")
+                    st.warning(
+                        "Using less than 5 variable to build model is not recommended!"
+                    )
                 st.dataframe(features)
                 feat_list = list(features.index)
                 feat_list.append(sel_target)
@@ -213,7 +229,9 @@ def main():
 
             st.subheader("Features with respect Chi-Square:")
             if len(list(features["Feature"])) < 5:
-                st.warning("Using less than 5 variable to build model is not recommended!")
+                st.warning(
+                    "Using less than 5 variable to build model is not recommended!"
+                )
             st.dataframe(features)
             feat_list = list(features["Feature"])
             feat_list.append(sel_target)
@@ -226,9 +244,13 @@ def main():
                 min_value=1,
                 max_value=label_encode_df.shape[1] - 1,
             )
-            features = rec_feat_ele(model_element, label_encode_df, sel_target, num_feat)
+            features = rec_feat_ele(
+                model_element, label_encode_df, sel_target, num_feat
+            )
             if list(features[features["Imp"] == True]["Imp"]).count(True) < 5:
-                st.warning("Using less than 5 variable to build model is not recommended!")
+                st.warning(
+                    "Using less than 5 variable to build model is not recommended!"
+                )
             st.dataframe(features[features["Imp"] == True])
             feat_list = list(features[features["Imp"] == True]["Feature"])
             feat_list.append(sel_target)
@@ -249,7 +271,3 @@ def main():
 
     else:
         st.sidebar.warning("Please Upload a file.")
-
-
-if __name__ == "__main__":
-    main()
