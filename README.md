@@ -34,6 +34,8 @@
     Application is built for all the people weather the person is beginner or expert. For using the application the person needs to have just some basic knowledge of classification and regression algorithms, some data-preprocessing steps. That's all you need to know! But for using this application you need to have a data-set.
 </p>
 
+- [Visit Application](https://mlmodelbuidlingapp.streamlit.app/)
+
 ## Features
 
 ### 1. Model Building
